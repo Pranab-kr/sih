@@ -17,7 +17,7 @@ export function DataVisualization() {
       ];
     }
 
-    // Calculate emissions from different sources based on actual data
+    // Calculate emissions from different sources based on actual data 
     const materials = state.currentProduct.materials;
     const processes = state.currentProduct.processes;
 
@@ -152,11 +152,11 @@ export function DataVisualization() {
                 />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: '#1f2937', 
-                    border: 'none',
+                    backgroundColor: '#f5f5f5', 
+                    border: '1px solid #d1d5db',
                     borderRadius: '8px',
                     fontSize: '12px',
-                    color: 'white'
+                    color: '#374151'
                   }} 
                   formatter={(value) => [`${value} kg CO₂e`, 'Emissions']}
                 />
