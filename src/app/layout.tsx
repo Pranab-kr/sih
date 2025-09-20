@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Analyze and visualize LCA data with ease.",
 };
 
+import { LCAProvider } from '@/contexts/LCAContext';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <LCAProvider>
+          {children}
+        </LCAProvider>
       </body>
     </html>
   );
