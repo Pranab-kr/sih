@@ -1,9 +1,8 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useLCA } from '@/contexts/LCAContext';
-import { MATERIAL_FACTORS } from '@/types/lca';
 
 export function DataVisualization() {
   const { state } = useLCA();
@@ -197,7 +196,7 @@ export function DataVisualization() {
                   dataKey="value"
                   label={({ name, value }) => `${name}: ${Number(value).toFixed(1)}%`}
                 >
-                  {emissionsData.map((entry: any, index: number) => (
+                  {emissionsData.map((entry: {name: string; value: number; color: string}, index: number) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>

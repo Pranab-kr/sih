@@ -24,7 +24,7 @@ export default function Page() {
               <section id="home" className="scroll-mt-6">
                 <div className="mb-8">
                   <h1 className="text-2xl font-semibold text-neutral-800 mb-2">LCA Dashboard</h1>
-                  <p className="text-neutral-600">Analyze your product's environmental impact throughout its lifecycle</p>
+                  <p className="text-neutral-600">Analyze your product&apos;s environmental impact throughout its lifecycle</p>
                 </div>
               </section>
               

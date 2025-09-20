@@ -239,7 +239,7 @@ export function InputFormSection() {
                   </div>
                   <div className="space-y-2">
                     <Label>Unit</Label>
-                    <Select value={materialForm.unit} onValueChange={(value: any) => setMaterialForm(prev => ({ ...prev, unit: value }))}>
+                    <Select value={materialForm.unit} onValueChange={(value: string) => setMaterialForm(prev => ({ ...prev, unit: value as 'kg' | 'ton' | 'pieces' | 'liters' | 'm3' }))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -254,7 +254,7 @@ export function InputFormSection() {
                   </div>
                   <div className="space-y-2">
                     <Label>Material Type</Label>
-                    <Select value={materialForm.type} onValueChange={(value: any) => setMaterialForm(prev => ({ ...prev, type: value }))}>
+                    <Select value={materialForm.type} onValueChange={(value: string) => setMaterialForm(prev => ({ ...prev, type: value as 'aluminum' | 'steel' | 'plastic' | 'glass' | 'paper' | 'wood' | 'concrete' | 'other' }))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -340,7 +340,7 @@ export function InputFormSection() {
                   </div>
                   <div className="space-y-2">
                     <Label>Process Type</Label>
-                    <Select value={processForm.type} onValueChange={(value: any) => setProcessForm(prev => ({ ...prev, type: value }))}>
+                    <Select value={processForm.type} onValueChange={(value: string) => setProcessForm(prev => ({ ...prev, type: value as 'manufacturing' | 'transport' | 'use' | 'end_of_life' }))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -364,7 +364,7 @@ export function InputFormSection() {
                   </div>
                   <div className="space-y-2">
                     <Label>Energy Type</Label>
-                    <Select value={processForm.energyType} onValueChange={(value: any) => setProcessForm(prev => ({ ...prev, energyType: value }))}>
+                    <Select value={processForm.energyType} onValueChange={(value: string) => setProcessForm(prev => ({ ...prev, energyType: value as 'grid' | 'renewable' | 'fossil' }))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -398,7 +398,7 @@ export function InputFormSection() {
                       </div>
                       <div className="space-y-2">
                         <Label>Transport Mode</Label>
-                        <Select value={processForm.transportMode || 'truck'} onValueChange={(value: any) => setProcessForm(prev => ({ ...prev, transportMode: value }))}>
+                        <Select value={processForm.transportMode || 'truck'} onValueChange={(value: string) => setProcessForm(prev => ({ ...prev, transportMode: value as 'truck' | 'ship' | 'train' | 'air' }))}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
@@ -460,7 +460,7 @@ export function InputFormSection() {
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold">Ready to Calculate</h3>
                 <p className="text-neutral-600">
-                  Calculate the environmental impact of your product based on the materials and processes you've defined.
+                  Calculate the environmental impact of your product based on the materials and processes you&apos;ve defined.
                 </p>
               </div>
 

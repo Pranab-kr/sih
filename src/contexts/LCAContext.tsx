@@ -291,7 +291,7 @@ function calculateLCA(product: Product): LCAResults {
   };
 }
 
-function generateRecommendations(product: Product, metrics: any): string[] {
+function generateRecommendations(product: Product, metrics: {carbonFootprintByStage: {materials: number; manufacturing: number; transport: number; use: number; endOfLife: number}; recyclabilityScore: number; materialEfficiency: number; totalCarbonFootprint: number}): string[] {
   const recommendations: string[] = [];
 
   // Material recommendations
