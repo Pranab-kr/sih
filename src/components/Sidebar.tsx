@@ -17,13 +17,15 @@ export function Sidebar() {
   const handleNavClick = (item: typeof navigationItems[0]) => {
     setActiveItem(item.id);
     
-    // Scroll to the corresponding section
-    const element = document.getElementById(item.id);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+    // Scroll to the corresponding section (only on client side)
+    if (typeof window !== 'undefined') {
+      const element = document.getElementById(item.id);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }
   };
   return (
