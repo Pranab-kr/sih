@@ -88,7 +88,7 @@ export interface LCAContextType {
     addProcess: (process: ProcessStep) => void;
     updateProcess: (id: string, process: Partial<ProcessStep>) => void;
     removeProcess: (id: string) => void;
-    calculateLCA: () => Promise<LCAResults>;
+    calculateLCA: (product?: Product) => Promise<LCAResults>;
     saveProduct: () => void;
     loadProduct: (id: string) => void;
     resetCalculation: () => void;

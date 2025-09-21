@@ -9,65 +9,44 @@ export function KPICards() {
 
   const getKPIData = () => {
     if (!state.calculations) {
-      return [
-        {
-          title: 'CO₂ Emissions',
-          value: '2.4',
-          unit: 'tons CO₂e',
-          change: '-12% vs baseline',
-          trend: 'down' as const,
-          icon: Leaf,
-          color: 'text-emerald-600'
-        },
-        {
-          title: 'Energy Use',
-          value: '1,850',
-          unit: 'kWh',
-          change: '-8% vs baseline',
-          trend: 'down' as const,
-          icon: Zap,
-          color: 'text-amber-600'
-        },
-        {
-          title: 'Water Usage',
-          value: '2,400',
-          unit: 'liters',
-          change: '-5% vs baseline',
-          trend: 'down' as const,
-          icon: Droplets,
-          color: 'text-blue-600'
-        },
-        {
-          title: 'Circularity Score',
-          value: '78',
-          unit: '%',
-          change: '+15% vs baseline',
-          trend: 'up' as const,
-          icon: Recycle,
-          color: 'text-sky-600'
-        },
-        {
-          title: 'Sustainability Index',
-          value: '82',
-          unit: '/100',
-          change: '+5% vs baseline',
-          trend: 'up' as const,
-          icon: TrendingUp,
-          color: 'text-green-600'
-        }
-      ];
+      return null;
     }
 
     // Calculate actual KPIs from the LCA results
     const { totalCarbonFootprint, energyConsumption, waterUsage, recyclabilityScore, sustainabilityScore } = state.calculations;
+    
+    // Calculate baselines based on material type and industry averages
+    const primaryMaterial = state.currentProduct?.materials[0];
+    const materialType = primaryMaterial?.type || 'other';
+    
+    // Industry baseline factors (kg CO2e per kg of material)
+    const materialBaselines = {
+      aluminum: 8.2,  // kg CO2e/kg
+      steel: 2.9,
+      plastic: 3.4,
+      glass: 0.85,
+      paper: 0.7,
+      wood: -1.1,  // Carbon negative
+      concrete: 0.11,
+      other: 2.5
+    };
+    
+    const materialQuantity = primaryMaterial?.quantity || 1;
+    const baselineCO2 = materialBaselines[materialType] * materialQuantity;
+    const baselineEnergy = materialQuantity * 15; // Baseline kWh/kg
+    const baselineWater = materialQuantity * 25; // Baseline liters/kg
+    
+    const co2Change = ((totalCarbonFootprint - baselineCO2) / baselineCO2) * 100;
+    const energyChange = ((energyConsumption - baselineEnergy) / baselineEnergy) * 100;
+    const waterChange = ((waterUsage - baselineWater) / baselineWater) * 100;
     
     return [
       {
         title: 'CO₂ Emissions',
         value: (totalCarbonFootprint / 1000).toFixed(1),
         unit: 'tons CO₂e',
-        change: '+0% vs baseline',
-        trend: 'neutral' as const,
+        change: `${co2Change > 0 ? '+' : ''}${co2Change.toFixed(0)}%`,
+        trend: co2Change < -10 ? 'up' as const : co2Change > 10 ? 'down' as const : 'neutral' as const,
         icon: Leaf,
         color: 'text-emerald-600'
       },
@@ -75,17 +54,17 @@ export function KPICards() {
         title: 'Energy Use',
         value: energyConsumption.toFixed(0),
         unit: 'kWh',
-        change: '+0% vs baseline',
-        trend: 'neutral' as const,
+        change: `${energyChange > 0 ? '+' : ''}${energyChange.toFixed(0)}%`,
+        trend: energyChange < -10 ? 'up' as const : energyChange > 10 ? 'down' as const : 'neutral' as const,
         icon: Zap,
         color: 'text-amber-600'
       },
       {
         title: 'Water Usage',
-        value: waterUsage > 1000 ? (waterUsage / 1000).toFixed(1) : waterUsage.toFixed(0),
-        unit: waterUsage > 1000 ? 'k liters' : 'liters',
-        change: '+0% vs baseline',
-        trend: 'neutral' as const,
+        value: waterUsage > 1000 ? (waterUsage / 1000).toFixed(1) : waterUsage.toFixed(1),
+        unit: waterUsage > 1000 ? 'k liters' : 'k liters',
+        change: `${waterChange > 0 ? '+' : ''}${waterChange.toFixed(0)}%`,
+        trend: waterChange < -10 ? 'up' as const : waterChange > 10 ? 'down' as const : 'neutral' as const,
         icon: Droplets,
         color: 'text-blue-600'
       },
@@ -93,8 +72,8 @@ export function KPICards() {
         title: 'Circularity Score',
         value: recyclabilityScore.toFixed(0),
         unit: '%',
-        change: '+0% vs baseline',
-        trend: recyclabilityScore > 70 ? 'up' as const : 'down' as const,
+        change: `${recyclabilityScore.toFixed(0)}% recycled`,
+        trend: recyclabilityScore > 70 ? 'up' as const : recyclabilityScore < 30 ? 'down' as const : 'neutral' as const,
         icon: Recycle,
         color: 'text-sky-600'
       },
@@ -102,8 +81,8 @@ export function KPICards() {
         title: 'Sustainability Index',
         value: sustainabilityScore.toFixed(0),
         unit: '/100',
-        change: '+0% vs baseline',
-        trend: sustainabilityScore > 70 ? 'up' as const : 'down' as const,
+        change: `${sustainabilityScore > 70 ? 'Excellent' : sustainabilityScore > 50 ? 'Good' : sustainabilityScore > 30 ? 'Fair' : 'Poor'}`,
+        trend: sustainabilityScore > 70 ? 'up' as const : sustainabilityScore < 30 ? 'down' as const : 'neutral' as const,
         icon: TrendingUp,
         color: 'text-green-600'
       }
@@ -111,6 +90,11 @@ export function KPICards() {
   };
 
   const kpiData = getKPIData();
+
+  // Only render if we have calculated data
+  if (!kpiData) {
+    return null;
+  }
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">

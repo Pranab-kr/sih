@@ -382,8 +382,10 @@ export function LCAProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'REMOVE_PROCESS', payload: id });
     }, []),
 
-    calculateLCA: useCallback(async (): Promise<LCAResults> => {
-      if (!state.currentProduct) {
+    calculateLCA: useCallback(async (product?: Product): Promise<LCAResults> => {
+      const productToUse = product || state.currentProduct;
+      
+      if (!productToUse) {
         throw new Error('No product selected for calculation');
       }
 
@@ -392,7 +394,7 @@ export function LCAProvider({ children }: { children: ReactNode }) {
       // Simulate calculation delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const results = calculateLCA(state.currentProduct);
+      const results = calculateLCA(productToUse);
       dispatch({ type: 'SET_CALCULATIONS', payload: results });
 
       return results;
