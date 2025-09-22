@@ -9,6 +9,11 @@ import { Badge } from './ui/badge';
 import { Calculator, Leaf } from 'lucide-react';
 import { useLCA } from '@/contexts/LCAContext';
 import { Product } from '@/types/lca';
+import { AIMissingDataPrediction } from './AIMissingDataPrediction';
+
+// Stable ID generation to prevent hydration issues
+let idCounter = 1;
+const generateId = (prefix: string) => `${prefix}_${idCounter++}`;
 
 // Material emission factors (kg CO2 eq per unit)
 const MATERIAL_FACTORS = {
@@ -83,7 +88,30 @@ export function InputFormSection() {
     transportDistance: 0,
   });
 
+  // Handle AI prediction of missing parameters
+  const handlePredictMissing = (predictions: Record<string, number>) => {
+    // Map prediction IDs to state updates
+    const parameterMap: Record<string, (value: number) => void> = {
+      'raw-material': (value) => setProductionInputs(prev => ({ ...prev, rawMaterial: value })),
+      'electricity': (value) => setProductionInputs(prev => ({ ...prev, electricity: value })),
+      'natural-gas': (value) => setProductionInputs(prev => ({ ...prev, naturalGas: value })),
+      'water': (value) => setProductionInputs(prev => ({ ...prev, water: value })),
+      'sulfuric-acid': (value) => setChemicalInputs(prev => ({ ...prev, sulfuricAcid: value })),
+      'caustic-soda': (value) => setChemicalInputs(prev => ({ ...prev, causticSoda: value })),
+      'lubricants': (value) => setChemicalInputs(prev => ({ ...prev, lubricants: value })),
+      'waste-water': (value) => setWasteTransport(prev => ({ ...prev, wasteWater: value })),
+      'solid-waste': (value) => setWasteTransport(prev => ({ ...prev, solidWaste: value })),
+      'transport-distance': (value) => setWasteTransport(prev => ({ ...prev, transportDistance: value })),
+    };
 
+    // Apply all predictions
+    Object.entries(predictions).forEach(([parameterId, value]) => {
+      const updateFunction = parameterMap[parameterId];
+      if (updateFunction) {
+        updateFunction(value);
+      }
+    });
+  };
 
   // Calculate realistic environmental impacts based on input data
   const calculateImpacts = () => {
@@ -128,13 +156,13 @@ export function InputFormSection() {
 
     // Create a product based on current inputs
     const newProduct: Product = {
-      id: `product_${Date.now()}`,
+      id: generateId('product'),
       name: `${selectedMaterial.charAt(0).toUpperCase() + selectedMaterial.slice(1)} Product`,
       description: `Product made from ${selectedMaterial}`,
       functionalUnit: `${productionInputs.rawMaterial} kg`,
       lifespan: 10,
       materials: [{
-        id: `material_${Date.now()}`,
+        id: generateId('material'),
         name: selectedMaterial,
         quantity: productionInputs.rawMaterial,
         unit: 'kg',
@@ -146,7 +174,7 @@ export function InputFormSection() {
         waterIntensity: materialFactor.water,
       }],
       processes: [{
-        id: `process_${Date.now()}`,
+        id: generateId('process'),
         name: 'Manufacturing Process',
         type: 'manufacturing',
         energyConsumption: productionInputs.electricity,
@@ -299,9 +327,21 @@ export function InputFormSection() {
               />
             </div>
           </div>
+        </CardContent>
+      </Card>
 
+      {/* AI Missing Data Prediction Panel */}
+      <AIMissingDataPrediction
+        productionInputs={productionInputs}
+        chemicalInputs={chemicalInputs}
+        wasteTransport={wasteTransport}
+        onPredictMissing={handlePredictMissing}
+      />
+
+      <Card>
+        <CardContent className="pt-6">
           {/* Calculate Button */}
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-center pt-0">
             <Button 
               onClick={handleCalculate} 
               disabled={state.isCalculating || productionInputs.rawMaterial === 0}

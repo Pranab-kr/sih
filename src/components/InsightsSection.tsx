@@ -3,9 +3,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Info, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
 import { useLCA } from '@/contexts/LCAContext';
+import { useEffect, useState } from 'react';
 
 export function InsightsSection() {
   const { state } = useLCA();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getInsights = () => {
     // Default insights when no calculations exist
@@ -96,6 +102,34 @@ export function InsightsSection() {
   };
 
   const insights = getInsights();
+  
+  // Prevent hydration mismatch by only rendering dynamic content after client-side hydration
+  if (!isClient) {
+    return (
+      <Card className="bg-neutral-50 border-neutral-200 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-neutral-800">Report Generation</CardTitle>
+          <CardDescription className="text-neutral-600">
+            Actionable insights to optimize your sustainability performance
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="p-4 rounded-lg border bg-blue-50 border-opacity-20">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 mt-0.5 text-blue-600" />
+                <div className="flex-1 space-y-1">
+                  <h4 className="text-sm text-neutral-800">Loading Insights...</h4>
+                  <p className="text-sm text-neutral-600 leading-relaxed">Generating personalized recommendations based on your data.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-neutral-50 border-neutral-200 shadow-sm">
       <CardHeader>
@@ -106,17 +140,20 @@ export function InsightsSection() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {insights.map((insight, index) => (
-            <div key={index} className={`p-4 rounded-lg border ${insight.bgColor} border-opacity-20`}>
-              <div className="flex items-start gap-3">
-                <insight.icon className={`w-5 h-5 mt-0.5 ${insight.color}`} />
-                <div className="flex-1 space-y-1">
-                  <h4 className="text-sm text-neutral-800">{insight.title}</h4>
-                  <p className="text-sm text-neutral-600 leading-relaxed">{insight.message}</p>
+          {insights.map((insight, index) => {
+            const IconComponent = insight.icon;
+            return (
+              <div key={`${insight.type}-${insight.title}-${index}`} className={`p-4 rounded-lg border ${insight.bgColor} border-opacity-20`}>
+                <div className="flex items-start gap-3">
+                  <IconComponent className={`w-5 h-5 mt-0.5 ${insight.color}`} />
+                  <div className="flex-1 space-y-1">
+                    <h4 className="text-sm text-neutral-800">{insight.title}</h4>
+                    <p className="text-sm text-neutral-600 leading-relaxed">{insight.message}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </CardContent>
     </Card>
