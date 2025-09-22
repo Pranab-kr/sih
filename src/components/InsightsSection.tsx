@@ -108,7 +108,7 @@ export function InsightsSection() {
     return (
       <Card className="bg-neutral-50 border-neutral-200 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-neutral-800">Report Generation</CardTitle>
+          <CardTitle className="text-neutral-800">AI-Powered Insights & Recommendations</CardTitle>
           <CardDescription className="text-neutral-600">
             Actionable insights to optimize your sustainability performance
           </CardDescription>
@@ -133,7 +133,7 @@ export function InsightsSection() {
   return (
     <Card className="bg-neutral-50 border-neutral-200 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-neutral-800">AI-Powered Insights & Recommendations</CardTitle>
+        <CardTitle className="text-neutral-800">Report Genaration</CardTitle>
         <CardDescription className="text-neutral-600">
           Actionable insights to optimize your sustainability performance
         </CardDescription>
